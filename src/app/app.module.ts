@@ -1,18 +1,19 @@
 import {NgModule, APP_INITIALIZER} from '@angular/core';
 import { AppComponent } from './app.component';
-import {ConfigService} from '../service/ConfigService';
+import {ConfigService} from './service/ConfigService';
 import { HttpClient, provideHttpClient } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { provideRouter, RouterModule, withHashLocation } from '@angular/router';
 import { routes } from './app.routes';
+import { WebSocketService } from './service/WebSocketService';
 
 const appConfigFactory = (httpClient:HttpClient) => {
     console.log('here')
     console.log(JSON.stringify(httpClient));
-    const config = new ConfigService(httpClient);
+    ConfigService.init(httpClient);
     
     return (): Promise<any> => {
-        return config.loadConfig();
+        return ConfigService.loadConfig();
     }
 }
 
