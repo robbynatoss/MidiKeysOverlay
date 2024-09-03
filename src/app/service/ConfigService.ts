@@ -14,9 +14,13 @@ export class ConfigService {
         }
     }
 
-    static loadConfig = (): Promise<any> => {
-        ConfigService.config$ = ConfigService.http.get('/config.yaml',{responseType:'text'});
-        return Promise.resolve();
+    static loadConfig = (): Promise<Observable<string>> => {
+        return new Promise((resolve, reject) => { 
+            if(!ConfigService.config$){
+                ConfigService.config$ = ConfigService.http.get('/config.yaml', { responseType: 'text' })
+            }
+            resolve(ConfigService.config$);
+        });
     }
 
     static getConfig = (): Observable<any> => { 
