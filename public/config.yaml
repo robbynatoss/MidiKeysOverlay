@@ -2,5 +2,5 @@ websocket:
   URL: 'ws://127.0.0.1:9090'
   endpoint: '/keys'
 range:
-  leftKey: C2
-  rightKey: C7
+  leftKey: C1
+  rightKey: C8

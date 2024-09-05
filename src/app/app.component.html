@@ -7,7 +7,8 @@
                 'rightKey':isRightKey(kv.value,i),
                 'middleKey':isMiddleKey(kv.value,i),
                 'middleKey1':isMiddleKey1(kv.value,i),
-                'middleKey2':isMiddleKey2(kv.value,i)}">
+                'middleKey2':isMiddleKey2(kv.value,i),
+                'extraKey':isExtraKey(kv.value,i)}">
                 <div 
                 [ngClass]="{'pressed':kv.value.pressed}"
                 class="key-highlight"></div>

@@ -18,7 +18,7 @@ export class AppComponent {
   webSocketService:WebSocketService;
   noteData:string;
   config:any;
-  keys:{[key:string]:Key};
+  keys:{[key:number]:Key};
   constructor(){
     this.webSocketService = new WebSocketService();
     this.config = "";
@@ -37,7 +37,10 @@ export class AppComponent {
         console.log("ws" + wsValue);
         this.noteData = this.noteData + wsValue;
         const data:NoteData = JSON.parse(wsValue);
-        const noteId = NoteNames.indexOf(data.noteName);
+
+        const fixedNote = this.shiftDown(data.noteName);
+
+        const noteId = NoteNames.indexOf(fixedNote) + 10;
         if(this.keys[noteId]){
           if(data.velocity > 0){
             this.keys[noteId].pressed = true;
@@ -73,11 +76,28 @@ export class AppComponent {
 
   isRightKey(key:Key, index:number){
     return key.isWhiteKey 
-    && ((key.noteName.includes('E')
-    || key.noteName.includes('B'))
-    || index == Object.values(this.keys).length - 1);
+    && (key.noteName.includes('E')
+    || key.noteName.includes('B'));
   }
 
+  isExtraKey(key:Key, index:number){
+    return index == Object.values(this.keys).length - 1;
+  }
+
+
+  shiftDown(noteName:string){
+    let result = "";
+    const numbers = "0123456789";
+    for(let char of noteName){
+      if(numbers.includes(char)){
+        const num = parseInt(char);
+        result+= (num-1).toString();
+      }else{
+        result+=char
+      }
+    }
+    return result;
+  }
 
   generateKeyboard = () => {
     // const noteRange = Object.values(NoteNames); 
@@ -86,9 +106,9 @@ export class AppComponent {
     const rightInd = NoteNames.indexOf(this.config.range.rightKey);
 
 
-    console.log("left" + this.config.leftKey);
-    console.log("right" + this.config.rightKey);
-    for(let i = leftInd; i < rightInd; i++){
+    console.log("left" + this.config.range.leftKey);
+    console.log("right" + this.config.range.rightKey);
+    for(let i = leftInd; i <= rightInd; i++){
       const note = NoteNames[i];
       const key:Key = {
         isWhiteKey : !note.includes("#"),
@@ -96,7 +116,7 @@ export class AppComponent {
         pressed:false,
         velocity:0
       }
-      this.keys[i]=key;
+      this.keys[i+10]=key;
     }
     console.log(JSON.stringify(this.keys));
   }
