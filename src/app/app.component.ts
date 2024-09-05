@@ -49,6 +49,35 @@ export class AppComponent {
     });
   }
 
+  isLeftKey(key:Key, index:number){
+    return key.isWhiteKey&&
+    ((key.noteName.includes('C')
+    || key.noteName.includes('F')) 
+    || index == 0);
+  }
+
+  isMiddleKey(key:Key, index:number){
+    return key.isWhiteKey &&
+    ((key.noteName.includes('D')) && (index !== Object.values(this.keys).length - 1 && index !== 0));
+  }
+
+  isMiddleKey1(key:Key, index:number){
+    return key.isWhiteKey &&
+    (key.noteName.includes('G') && (index !== Object.values(this.keys).length - 1 && index !== 0));
+  }
+
+  isMiddleKey2(key:Key, index:number){
+    return key.isWhiteKey &&
+    (key.noteName.includes('A') && (index !== Object.values(this.keys).length - 1 && index !== 0));
+  }
+
+  isRightKey(key:Key, index:number){
+    return key.isWhiteKey 
+    && ((key.noteName.includes('E')
+    || key.noteName.includes('B'))
+    || index == Object.values(this.keys).length - 1);
+  }
+
 
   generateKeyboard = () => {
     // const noteRange = Object.values(NoteNames); 

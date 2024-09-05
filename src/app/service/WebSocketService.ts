@@ -9,6 +9,7 @@ import { parse } from 'yaml';
 export class WebSocketService {
     
     private URL:string;
+    private endpoint:string;
     private webSocketSubject:WebSocketSubject<string>|undefined;
     public webSocket$:Promise<Observable<string>>;
 
@@ -31,15 +32,17 @@ export class WebSocketService {
     constructor(){
         const configState = ConfigService.getConfig();
         this.URL='';
+        this.endpoint='';
         this.webSocketSubject= undefined;
         
         this.webSocket$ = new Promise((resolve,reject) => {
             configState.subscribe((body:string) => {
                 const state = parse(body);
                 this.URL = state.websocket.URL;
+                this.endpoint = state.websocket.endpoint;
 
                 this.webSocketSubject = webSocket<string>({
-                    url:this.URL, 
+                    url:this.URL+this.endpoint, 
                     openObserver: {
                         next: () => {
                             console.log('connection ok');

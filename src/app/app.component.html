@@ -1,8 +1,16 @@
-<div class="debugText">
-    {{noteData}}
-</div>
 <div class="keyboardContainer">
     <div *ngFor="let kv of keys | keyvalue; index as i"
     class="key"
-    [ngClass]="{'pressed':kv.value.pressed, 'blackKey':!kv.value.isWhiteKey}">{{kv.value.noteName}}</div>
+    [ngClass]="{'blackKey':!kv.value.isWhiteKey, 
+                'whiteKey': kv.value.isWhiteKey,
+                'leftKey':isLeftKey(kv.value,i),
+                'rightKey':isRightKey(kv.value,i),
+                'middleKey':isMiddleKey(kv.value,i),
+                'middleKey1':isMiddleKey1(kv.value,i),
+                'middleKey2':isMiddleKey2(kv.value,i)}">
+                <div 
+                [ngClass]="{'pressed':kv.value.pressed}"
+                class="key-highlight"></div>
+    </div>
+
 </div>

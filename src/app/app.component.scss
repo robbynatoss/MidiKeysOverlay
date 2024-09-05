@@ -1,40 +1,88 @@
 .debugText{
-    height:30vh;
     width: 100%;
     background-color: aqua;
     overflow-y: scroll;
+    visibility: hidden;
 }
 
 .keyboardContainer{
-    position: absolute;
-    bottom: 2vh;
+    position: relative;
+    left:auto;
+    right:auto;
+    top:auto;
+    bottom: 0em;
+    margin-left: auto;
+    margin-right: auto;
+    width: fit-content;
     display: flex;
     flex: 0 0 auto;
-    height: 20vh;
+    height: 15em;
 }
 
 .pressed{
-    background-color: yellowgreen !important;
+    background-color: rgba(234, 0, 255, 0.336) !important;
+    
+}
+
+.key-highlight{
+    height: 100%;
+    background-color: rgba(170, 255, 0, 0);
 }
 
 .key{
-    display: inline-block;
-    height: 100%;
-    min-width: 2vw;
-    background-color: white;
-    border: 5px;
-    border-radius: 30% 30% 30% 30% / 5% 5% 5% 5%;
-    border-color: black;
-    border-style: groove;
-    // margin:15px;
+    margin:0 0 0 0;
+    position: relative;    
+    z-index: 1;
+    height: 11.5em;
+    min-width: auto;
+    top:0;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 .whiteKey{
+}
 
+.leftKey {
+    margin:0 -0.96em 0 -0.1em;
+    aspect-ratio: 60/348;
+    background-image: url("/left_white_key.png");
+}
+.middleKey {
+    margin:0 -0.5em 0 -0.5em;
+    aspect-ratio: 60/348;
+    background-image: url("/middle_white_key.png");
+}
+.rightKey {
+    margin:0 0 0 -0.94em;
+    aspect-ratio: 62/348;
+    background-image: url("/right_white_key.png");
+}
+
+.middleKey1{
+    margin:0 -0.69em 0 -0.45em;
+    aspect-ratio: 59/348;
+    background-image: url("/middle_white_key_2.png");
+}
+
+.middleKey2{
+    margin:0 -0.45em 0 -0.72em;
+    aspect-ratio: 59/348;
+    background-image: url("/middle_white_key_2.png");
+    -moz-transform: scaleX(-1);
+    -o-transform: scaleX(-1);
+    -webkit-transform: scaleX(-1);
+    transform: scaleX(-1);
+    filter: FlipH;
+    -ms-filter: "FlipH";
 }
 
 .blackKey{
-    min-width: 1vw;
-    display:float;
-    background-color: black;
+    margin:0 0 0 0em;
+    z-index: 999 !important;
+    height: 7.55em;
+    aspect-ratio: 41/226;
+    min-width: auto;
+    background-image: url("/black_key.png");
 }
