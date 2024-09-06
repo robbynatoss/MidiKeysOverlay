@@ -16,12 +16,11 @@
     width: fit-content;
     display: flex;
     flex: 0 0 auto;
-    height: 15em;
+    height: calc(18em + 70vh);
 }
 
 .pressed{
     background-color: rgba(136, 0, 148, 0.445) !important;
-    
 }
 
 .key-highlight{
@@ -41,38 +40,65 @@
     background-size: cover;
 }
 
+.track{
+    margin: calc(-90vh) 0 0 0;
+    width: 100%;
+    height: 90vh;
+
+
+}
+
 .whiteKey{
 }
 
 .leftKey {
-    margin:0 -0.96em 0 -0.1em;
+    .track{
+        width: calc(100% - 0.96em);
+    }
+    margin:auto -0.96em 0 -0.1em;
     aspect-ratio: 60/348;
     background-image: url("/left_white_key.png");
 }
 .extraKey {
-    margin:0 0 0 0;
+    margin:auto 0 0 0;
     aspect-ratio: 60/348;
     background-image: url("/extra_key.png");
 }
 .middleKey {
-    margin:0 -0.5em 0 -0.5em;
+    .track{
+        width: calc(100% - 1em);
+        margin-left: 0.5em;
+    }
+    margin:auto -0.5em 0 -0.5em;
     aspect-ratio: 60/348;
     background-image: url("/middle_white_key.png");
 }
 .rightKey {
-    margin:0 0 0 -0.94em;
+    .track{
+        width: calc(100% - 0.94em);
+        margin-left: 0.94em;
+    }
+    margin:auto 0 0 -0.94em;
     aspect-ratio: 62/348;
     background-image: url("/right_white_key.png");
 }
 
 .middleKey1{
-    margin:0 -0.69em 0 -0.45em;
+    .track{
+        width: calc(100% - 1.14em);
+        margin-left: 0.45em;
+    }
+    margin:auto -0.69em 0 -0.45em;
     aspect-ratio: 59/348;
     background-image: url("/middle_white_key_2.png");
 }
 
 .middleKey2{
-    margin:0 -0.45em 0 -0.72em;
+    .track{
+        width: calc(100% - 1.17em);
+        margin-left: 0.45em;
+    }
+    margin:auto -0.45em 0 -0.72em;
     aspect-ratio: 59/348;
     background-image: url("/middle_white_key_2.png");
     -moz-transform: scaleX(-1);
@@ -83,8 +109,44 @@
     -ms-filter: "FlipH";
 }
 
+.rect{
+    position: relative;
+    width:calc(100% - 0.5em);
+    height: 90vh;
+    animation: rectGrow linear 6s;
+    transform-origin: 100% 100%;
+    background-color: rgba(136, 0, 148, 1) !important;
+    border-style: inset;
+    border-width: 0.3em;
+    border-color: rgb(210, 110, 219);
+}
+
+.rect.released{
+    animation: rectSlide linear 6s;
+}
+
+@keyframes rectSlide{
+    from {
+        bottom:0;
+    }
+    to {
+        bottom:90vh;
+    }
+}
+
+@keyframes rectGrow {
+    from {
+        transform: scaleY(0);
+        bottom:0;
+    }
+    to {
+        transform: scaleY(-1);
+        bottom:90vh;
+    }
+  }
+
 .blackKey{
-    margin:0 0 0 0em;
+    margin:auto 0 3.95em 0em;
     z-index: 999 !important;
     height: 7.55em;
     aspect-ratio: 41/226;

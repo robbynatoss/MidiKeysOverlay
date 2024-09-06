@@ -4,3 +4,5 @@ websocket:
 range:
   leftKey: C1
   rightKey: C8
+#animation speed in em/s
+animationSpeed: 0.5

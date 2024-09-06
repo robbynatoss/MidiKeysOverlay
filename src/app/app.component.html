@@ -9,7 +9,14 @@
                 'middleKey1':isMiddleKey1(kv.value,i),
                 'middleKey2':isMiddleKey2(kv.value,i),
                 'extraKey':isExtraKey(kv.value,i)}">
-                <div 
+                
+                <div class="track">
+                    <div *ngFor="let press of kv.value.keyPresses; index as j" 
+                    class="rect"
+                    [ngStyle]="press.diff !== -1 ? {'transform': 'scaleY(' + press.diff.toString().substring(0,5) + ')'}: null"
+                    [ngClass]="{'pressed':press.endTime == -1,'released':press.endTime !== -1}"></div>
+                </div>
+                <div
                 [ngClass]="{'pressed':kv.value.pressed}"
                 class="key-highlight"></div>
     </div>

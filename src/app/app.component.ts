@@ -4,7 +4,7 @@ import { ConfigService } from './service/ConfigService';
 import { WebSocketService } from './service/WebSocketService';
 import { combineLatest, generate, merge, Observable, timeout } from 'rxjs';
 import { parse } from 'yaml';
-import { Key } from './common/key';
+import { Key, KeyPress } from './common/key';
 import { NoteNames, NoteData, CommandCode } from './common/notes';
 
 @Component({
@@ -41,13 +41,28 @@ export class AppComponent {
         const fixedNote = this.shiftDown(data.noteName);
 
         const noteId = NoteNames.indexOf(fixedNote) + 10;
+        const now:number = Date.now();
         if(this.keys[noteId]){
           if(data.velocity > 0){
             this.keys[noteId].pressed = true;
+            const keyPress:KeyPress = {
+              startTime:now,
+              endTime:-1,
+              diff:-1
+            }
+            this.keys[noteId].keyPresses.unshift(keyPress);
+            //add an element to the list of animated rectangles
           }else{
+            //finalize the duration of the last keypress in the list of animated rectangles
+            this.keys[noteId].keyPresses[0].endTime = now;
+            this.keys[noteId].keyPresses[0].diff = (now - this.keys[noteId].keyPresses[0].startTime)/6000 ;
+            if(this.keys[noteId].keyPresses[0].diff > 1){
+              this.keys[noteId].keyPresses[0].diff = 1;
+            }
             this.keys[noteId].pressed = false;
           }
         }
+        console.log(JSON.stringify(this.keys[noteId].keyPresses));
       });
     });
   }
@@ -114,7 +129,8 @@ export class AppComponent {
         isWhiteKey : !note.includes("#"),
         noteName:note,
         pressed:false,
-        velocity:0
+        velocity:0,
+        keyPresses:[]
       }
       this.keys[i+10]=key;
     }
