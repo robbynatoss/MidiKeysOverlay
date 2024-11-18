@@ -1,4 +1,4 @@
-import { AfterContentChecked, AfterViewChecked, Component } from '@angular/core';
+import { AfterContentChecked, AfterViewChecked, Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ConfigService } from './service/ConfigService';
 import { WebSocketService } from './service/WebSocketService';
@@ -8,11 +8,13 @@ import { Key, KeyPress } from './common/key';
 import { NoteNames, NoteData, CommandCode } from './common/notes';
 import gsap from 'gsap';
 
+const seconds = 4;
 
+const height = 180;
 
-let rectGrow = (target:string) => gsap.fromTo(target,{translateY:0,scaleY:0},{translateY:'-90vh',scaleY:'-1',duration:'6s'});
+let rectGrow = (target:string) => gsap.fromTo(target,{translateY:0,scaleY:0, ease:'linear'},{translateY:`-${height}vh`,scaleY:'-1',duration:seconds,ease:'linear'});
 
-let rectSlide = (target:string, scale:number) => gsap.fromTo(target,{translateY:0,scaleY:scale},{translateY:'-90vh',scaleY:scale,duration:'6s'});
+let rectSlide = (target:string, scale:number) => gsap.fromTo(target,{translateY:`${scale*height}vh`,scaleY:scale, ease:'linear'},{translateY:`-${height}vh`,scaleY:scale,duration:seconds+scale*seconds,ease:'linear'});
 
 // @keyframes rectGrow {
 //   from {
@@ -60,6 +62,8 @@ export class AppComponent implements AfterViewChecked {
   keys:{[key:number]:Key};
   justPressed:string[];
   justReleased:string[];
+  currAnimation:gsap.core.Tween|undefined;
+  runningAnimations:{[key:string]:gsap.core.Tween};
   constructor(){
     this.webSocketService = new WebSocketService();
     this.config = "";
@@ -67,6 +71,8 @@ export class AppComponent implements AfterViewChecked {
     this.keys={};
     this.justPressed=[];
     this.justReleased=[];
+    this.currAnimation = undefined;
+    this.runningAnimations={}
 
     ConfigService.getConfig().subscribe((confValue) =>{
       if(!this.config){
@@ -98,11 +104,11 @@ export class AppComponent implements AfterViewChecked {
           }else{
             this.keys[noteId].pressed = false;
             this.keys[noteId].keyPresses[0].endTime = now;
-            this.keys[noteId].keyPresses[0].diff = -(now - this.keys[noteId].keyPresses[0].startTime)/6000 ;
+            this.keys[noteId].keyPresses[0].diff = -(now - this.keys[noteId].keyPresses[0].startTime)/(seconds*1000) ;
             if(this.keys[noteId].keyPresses[0].diff < -1){
               this.keys[noteId].keyPresses[0].diff = -1;
             }
-            this.justReleased.unshift(fixedNote);
+            this.justReleased.unshift(noteId.toString());
           }
         }
         console.log(JSON.stringify(this.keys[noteId].keyPresses));
@@ -114,13 +120,16 @@ export class AppComponent implements AfterViewChecked {
     for(let key of this.justPressed){
       const noteId=parseInt(key);
       console.log(noteId.toString());
-      rectGrow("#a"+noteId+'-'+(this.keys[noteId].keyPresses.length-1));
+      this.runningAnimations["#a"+noteId+'-'+(this.keys[noteId].keyPresses.length-1)] = rectGrow("#a"+noteId+'-'+(this.keys[noteId].keyPresses.length-1));
       this.justPressed = this.justPressed.slice(1,this.justPressed.length-1);
     }
-    for(let key in this.justReleased){
-      
+    for(let key of this.justReleased){
+      const noteId=parseInt(key);
+      this.runningAnimations["#a"+noteId+'-'+(this.keys[noteId].keyPresses.length-1)].kill();
+      console.log(this.keys[noteId].keyPresses[this.keys[noteId].keyPresses.length-1].diff);
+      this.currAnimation = rectSlide("#a"+noteId+'-'+(this.keys[noteId].keyPresses.length-1),this.keys[noteId].keyPresses[this.keys[noteId].keyPresses.length-1].diff);
+      this.justReleased = this.justReleased.slice(1,this.justReleased.length-1);
     }
-    
   }
 
   isLeftKey(key:Key, index:number){

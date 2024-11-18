@@ -41,9 +41,9 @@
 }
 
 .track{
-    margin: calc(-90vh) 0 0 0;
+    margin: calc(-180vh) 0 0 0;
     width: 100%;
-    height: 90vh;
+    height: 180vh;
 
 
 }
@@ -131,7 +131,7 @@
 
 .rect{
     position: absolute;
-    height: 90vh;
+    height: 180vh;
     bottom: 11.5em;
     animation: rectGrow linear 6s none;
     transform-origin: 0% 100%;
