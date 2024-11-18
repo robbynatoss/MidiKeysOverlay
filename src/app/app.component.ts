@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { AfterContentChecked, AfterViewChecked, Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ConfigService } from './service/ConfigService';
 import { WebSocketService } from './service/WebSocketService';
@@ -6,6 +6,45 @@ import { combineLatest, generate, merge, Observable, timeout } from 'rxjs';
 import { parse } from 'yaml';
 import { Key, KeyPress } from './common/key';
 import { NoteNames, NoteData, CommandCode } from './common/notes';
+import gsap from 'gsap';
+
+
+
+let rectGrow = (target:string) => gsap.fromTo(target,{translateY:0,scaleY:0},{translateY:'-90vh',scaleY:'-1',duration:'6s'});
+
+let rectSlide = (target:string, scale:number) => gsap.fromTo(target,{translateY:0,scaleY:scale},{translateY:'-90vh',scaleY:scale,duration:'6s'});
+
+// @keyframes rectGrow {
+//   from {
+//       transform: translateY(0) scaleY(0);
+//   }
+//   to {
+//       transform: translateY(-90vh) scaleY(-1);
+//   }
+// }
+
+
+
+// @keyframes blackRectSlide{
+//   from {
+//       bottom:calc(0em + 7.55em);
+//   }
+//   to {
+//       bottom:calc(90vh + 7.55em);
+//   }
+// }
+
+// @keyframes blackRectGrow {
+//   from {
+//       transform: scaleY(0);
+//       bottom:calc(0em + 7.55em);
+//   }
+//   to {
+//       transform: scaleY(-1);
+//       bottom:calc(90vh + 7.55em);
+//   }
+// }
+
 
 @Component({
   selector: 'app-root',
@@ -13,17 +52,21 @@ import { NoteNames, NoteData, CommandCode } from './common/notes';
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent {
+export class AppComponent implements AfterViewChecked {
   title = 'MidiKeysOverlay';
   webSocketService:WebSocketService;
   noteData:string;
   config:any;
   keys:{[key:number]:Key};
+  justPressed:string[];
+  justReleased:string[];
   constructor(){
     this.webSocketService = new WebSocketService();
     this.config = "";
     this.noteData="Data:";
     this.keys={};
+    this.justPressed=[];
+    this.justReleased=[];
 
     ConfigService.getConfig().subscribe((confValue) =>{
       if(!this.config){
@@ -48,23 +91,36 @@ export class AppComponent {
             const keyPress:KeyPress = {
               startTime:now,
               endTime:-1,
-              diff:-1
+              diff:1
             }
+            this.justPressed.unshift(noteId.toString());
             this.keys[noteId].keyPresses.unshift(keyPress);
-            //add an element to the list of animated rectangles
           }else{
-            //finalize the duration of the last keypress in the list of animated rectangles
-            this.keys[noteId].keyPresses[0].endTime = now;
-            this.keys[noteId].keyPresses[0].diff = (now - this.keys[noteId].keyPresses[0].startTime)/6000 ;
-            if(this.keys[noteId].keyPresses[0].diff > 1){
-              this.keys[noteId].keyPresses[0].diff = 1;
-            }
             this.keys[noteId].pressed = false;
+            this.keys[noteId].keyPresses[0].endTime = now;
+            this.keys[noteId].keyPresses[0].diff = -(now - this.keys[noteId].keyPresses[0].startTime)/6000 ;
+            if(this.keys[noteId].keyPresses[0].diff < -1){
+              this.keys[noteId].keyPresses[0].diff = -1;
+            }
+            this.justReleased.unshift(fixedNote);
           }
         }
         console.log(JSON.stringify(this.keys[noteId].keyPresses));
       });
     });
+  }
+
+  ngAfterViewChecked(){
+    for(let key of this.justPressed){
+      const noteId=parseInt(key);
+      console.log(noteId.toString());
+      rectGrow("#a"+noteId+'-'+(this.keys[noteId].keyPresses.length-1));
+      this.justPressed = this.justPressed.slice(1,this.justPressed.length-1);
+    }
+    for(let key in this.justReleased){
+      
+    }
+    
   }
 
   isLeftKey(key:Key, index:number){
@@ -138,5 +194,5 @@ export class AppComponent {
   }
   
 
-
+  public readonly NoteNames = NoteNames;
 }

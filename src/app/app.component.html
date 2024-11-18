@@ -12,8 +12,8 @@
                 
                 <div class="track">
                     <div *ngFor="let press of kv.value.keyPresses; index as j" 
+                    id="{{'a' + (NoteNames.indexOf(kv.value.noteName) + 10) + '-'+ j}}"
                     class="rect"
-                    [ngStyle]="press.diff !== -1 ? {'transform': 'scaleY(' + press.diff.toString().substring(0,5) + ')'}: null"
                     [ngClass]="{'pressed':press.endTime == -1,'released':press.endTime !== -1}"></div>
                 </div>
                 <div
@@ -22,3 +22,4 @@
     </div>
 
 </div>
+<!-- [ngStyle]="press.diff !== 1 ? {'transform': 'scaleY(' + press.diff.toString() + ')'}: null" -->

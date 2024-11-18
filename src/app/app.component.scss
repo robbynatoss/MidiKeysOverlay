@@ -55,6 +55,9 @@
     .track{
         width: calc(100% - 0.96em);
     }
+    .rect{
+        width: calc(100% - 0.96em);
+    }
     margin:auto -0.96em 0 -0.1em;
     aspect-ratio: 60/348;
     background-image: url("/left_white_key.png");
@@ -69,6 +72,10 @@
         width: calc(100% - 1em);
         margin-left: 0.5em;
     }
+    .rect{
+        width: calc(100% - 1em);
+        margin-right: 0.5em;
+    }
     margin:auto -0.5em 0 -0.5em;
     aspect-ratio: 60/348;
     background-image: url("/middle_white_key.png");
@@ -77,6 +84,10 @@
     .track{
         width: calc(100% - 0.94em);
         margin-left: 0.94em;
+    }
+    .rect{
+        width: calc( 0.94em);
+        margin-right: 0.94em;
     }
     margin:auto 0 0 -0.94em;
     aspect-ratio: 62/348;
@@ -88,6 +99,10 @@
         width: calc(100% - 1.14em);
         margin-left: 0.45em;
     }
+    .rect{
+        width: calc(100% - 1.14em);
+        margin-right: 0.45em;
+    }
     margin:auto -0.69em 0 -0.45em;
     aspect-ratio: 59/348;
     background-image: url("/middle_white_key_2.png");
@@ -98,8 +113,13 @@
         width: calc(100% - 1.17em);
         margin-left: 0.45em;
     }
+    .rect{
+        width: calc(100% - 1.17em);
+        margin-right: 0.45em;
+    }
+
     margin:auto -0.45em 0 -0.72em;
-    aspect-ratio: 59/348;
+    aspect-ratio: 62/348;
     background-image: url("/middle_white_key_2.png");
     -moz-transform: scaleX(-1);
     -o-transform: scaleX(-1);
@@ -110,42 +130,56 @@
 }
 
 .rect{
-    position: relative;
-    width:calc(100% - 0.5em);
+    position: absolute;
     height: 90vh;
-    animation: rectGrow linear 6s;
-    transform-origin: 100% 100%;
-    background-color: rgba(136, 0, 148, 1) !important;
-    border-style: inset;
-    border-width: 0.3em;
-    border-color: rgb(210, 110, 219);
+    bottom: 11.5em;
+    animation: rectGrow linear 6s none;
+    transform-origin: 0% 100%;
+    background-image: linear-gradient(to right ,rgb(234, 1, 255),rgb(95, 0, 104)) !important;
 }
 
 .rect.released{
-    animation: rectSlide linear 6s;
+    animation: rectSlide linear 6s none;
 }
 
-@keyframes rectSlide{
-    from {
-        bottom:0;
-    }
-    to {
-        bottom:90vh;
-    }
-}
+// @keyframes rectGrow {
+//     from {
+//         transform: translateY(0) scaleY(0);
+//     }
+//     to {
+//         transform: translateY(-90vh) scaleY(-1);
+//     }
+// }
 
-@keyframes rectGrow {
-    from {
-        transform: scaleY(0);
-        bottom:0;
-    }
-    to {
-        transform: scaleY(-1);
-        bottom:90vh;
-    }
-  }
+// @keyframes blackRectSlide{
+//     from {
+//         bottom:calc(0em + 7.55em);
+//     }
+//     to {
+//         bottom:calc(90vh + 7.55em);
+//     }
+// }
+
+// @keyframes blackRectGrow {
+//     from {
+//         transform: scaleY(0);
+//         bottom:calc(0em + 7.55em);
+//     }
+//     to {
+//         transform: scaleY(-1);
+//         bottom:calc(90vh + 7.55em);
+//     }
+// }
 
 .blackKey{
+    .rect{
+        width:calc(100%);
+        bottom:7.55em;
+        animation: blackRectGrow linear 6s;
+    }
+    .rect.released{
+        animation: blackRectSlide linear 6s;
+    }
     margin:auto 0 3.95em 0em;
     z-index: 999 !important;
     height: 7.55em;
