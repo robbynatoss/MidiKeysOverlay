@@ -12,41 +12,11 @@ const seconds = 4;
 
 const height = 180;
 
-let rectGrow = (target:string) => gsap.fromTo(target,{translateY:0,scaleY:0, ease:'linear'},{translateY:`-${height}vh`,scaleY:'-1',duration:seconds,ease:'linear'});
+let rectGrow = (target:string) => gsap.fromTo(target,{translateY:0,scaleY:0, force3D:true, ease:'linear'},{translateY:`-${height}vh`,scaleY:'-1',force3D:true,duration:seconds,ease:'linear'});
 
 let rectSlide = (target:string, scale:number) => gsap.fromTo(target,{translateY:`${scale*height}vh`,scaleY:scale, ease:'linear'},{translateY:`-${height}vh`,scaleY:scale,duration:seconds+scale*seconds,ease:'linear'});
 
-// @keyframes rectGrow {
-//   from {
-//       transform: translateY(0) scaleY(0);
-//   }
-//   to {
-//       transform: translateY(-90vh) scaleY(-1);
-//   }
-// }
-
-
-
-// @keyframes blackRectSlide{
-//   from {
-//       bottom:calc(0em + 7.55em);
-//   }
-//   to {
-//       bottom:calc(90vh + 7.55em);
-//   }
-// }
-
-// @keyframes blackRectGrow {
-//   from {
-//       transform: scaleY(0);
-//       bottom:calc(0em + 7.55em);
-//   }
-//   to {
-//       transform: scaleY(-1);
-//       bottom:calc(90vh + 7.55em);
-//   }
-// }
-
+// let rectShrink = (target:string) => gsap.fromTo(target,{translateY:0,scaleY:0, ease:'linear'},{translateY:`-${height}vh`,scaleY:'-1',duration:seconds,ease:'linear'});
 
 @Component({
   selector: 'app-root',
@@ -120,14 +90,16 @@ export class AppComponent implements AfterViewChecked {
     for(let key of this.justPressed){
       const noteId=parseInt(key);
       console.log(noteId.toString());
-      this.runningAnimations["#a"+noteId+'-'+(this.keys[noteId].keyPresses.length-1)] = rectGrow("#a"+noteId+'-'+(this.keys[noteId].keyPresses.length-1));
+      // this.runningAnimations["#a"+noteId+'-'+(this.keys[noteId].keyPresses.length-1)] = rectGrow("#a"+noteId+'-'+(this.keys[noteId].keyPresses.length-1));
+      this.runningAnimations["#a"+noteId+'-'+0] = rectGrow("#a"+noteId+'-'+'0');
       this.justPressed = this.justPressed.slice(1,this.justPressed.length-1);
     }
     for(let key of this.justReleased){
       const noteId=parseInt(key);
-      this.runningAnimations["#a"+noteId+'-'+(this.keys[noteId].keyPresses.length-1)].kill();
-      console.log(this.keys[noteId].keyPresses[this.keys[noteId].keyPresses.length-1].diff);
-      this.currAnimation = rectSlide("#a"+noteId+'-'+(this.keys[noteId].keyPresses.length-1),this.keys[noteId].keyPresses[this.keys[noteId].keyPresses.length-1].diff);
+      this.runningAnimations["#a"+noteId+'-'+(0)].kill();
+      console.log(this.keys[noteId].keyPresses[0].diff);
+      // this.currAnimation = rectSlide("#a"+noteId+'-'+(this.keys[noteId].keyPresses.length-1),this.keys[noteId].keyPresses[this.keys[noteId].keyPresses.length-1].diff);
+      this.currAnimation = rectSlide("#a"+noteId+'-'+0,this.keys[noteId].keyPresses[0].diff);
       this.justReleased = this.justReleased.slice(1,this.justReleased.length-1);
     }
   }
