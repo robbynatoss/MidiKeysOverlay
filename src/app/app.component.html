@@ -1,3 +1,10 @@
+<ng-container class="track" *ngFor="let kv of keys | keyvalue; index as a">
+    <div *ngFor="let press of kv.value.keyPresses; index as b" 
+    id="{{'a' + (NoteNames.indexOf(kv.value.noteName) + 10) + '-'+ press.pressId}}"
+    class="rect"
+    [ngStyle]="computestyle(a)"
+    [ngClass]="{'pressed':press.endTime == -1,'released':press.endTime !== -1}"></div>
+</ng-container>        
 <div class="keyboardContainer">
     <div *ngFor="let kv of keys | keyvalue; index as i"
     class="key"
@@ -9,16 +16,9 @@
                 'middleKey1':isMiddleKey1(kv.value,i),
                 'middleKey2':isMiddleKey2(kv.value,i),
                 'extraKey':isExtraKey(kv.value,i)}">
-                
-                <div class="track">
-                    <div *ngFor="let press of kv.value.keyPresses; index as j" 
-                    id="{{'a' + (NoteNames.indexOf(kv.value.noteName) + 10) + '-'+ j}}"
-                    class="rect"
-                    [ngClass]="{'pressed':press.endTime == -1,'released':press.endTime !== -1}"></div>
-                </div>
                 <div
                 [ngClass]="{'pressed':kv.value.pressed}"
                 class="key-highlight"></div>
     </div>
-
 </div>
+

@@ -2,21 +2,22 @@ import { AfterContentChecked, AfterViewChecked, Component, OnInit } from '@angul
 import { RouterOutlet } from '@angular/router';
 import { ConfigService } from './service/ConfigService';
 import { WebSocketService } from './service/WebSocketService';
-import { combineLatest, generate, merge, Observable, timeout } from 'rxjs';
+import { combineLatest, generate, merge, Observable, timeout, timestamp } from 'rxjs';
 import { parse } from 'yaml';
 import { Key, KeyPress } from './common/key';
 import { NoteNames, NoteData, CommandCode } from './common/notes';
 import gsap from 'gsap';
+import $ from 'jquery';
 
 const seconds = 4;
 
-const height = 180;
+const height = 80;
 
-let rectGrow = (target:string) => gsap.fromTo(target,{translateY:0,scaleY:0, force3D:true, ease:'linear'},{translateY:`-${height}vh`,scaleY:'-1',force3D:true,duration:seconds,ease:'linear'});
+let rectGrow = (target:string) => gsap.fromTo(target,{top:`${height}vh`,height:0, ease:'linear'},{top:`0`,height:`${height}vh`,duration:seconds,ease:'linear'});
 
-let rectSlide = (target:string, scale:number) => gsap.fromTo(target,{translateY:`${scale*height}vh`,scaleY:scale, ease:'linear'},{translateY:`-${height}vh`,scaleY:scale,duration:seconds+scale*seconds,ease:'linear'});
+let rectSlide = (target:string, scale:number) => gsap.fromTo(target,{top:`${height + scale*height}vh`,height:`${-scale*height}vh`, ease:'linear'},{top:`0`,height:`${-scale*height}vh`,duration:seconds+scale*seconds,ease:'linear'});
 
-// let rectShrink = (target:string) => gsap.fromTo(target,{translateY:0,scaleY:0, ease:'linear'},{translateY:`-${height}vh`,scaleY:'-1',duration:seconds,ease:'linear'});
+let rectShrink = (target:string, scale:number) => gsap.fromTo(target,{top:`0`,height:`${-scale*height}vh`,ease:'linear'},{top:`0`,height:`0`,duration:-scale * seconds,ease:'linear'});
 
 @Component({
   selector: 'app-root',
@@ -24,16 +25,19 @@ let rectSlide = (target:string, scale:number) => gsap.fromTo(target,{translateY:
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent implements AfterViewChecked {
+export class AppComponent implements AfterViewChecked,OnInit {
   title = 'MidiKeysOverlay';
   webSocketService:WebSocketService;
   noteData:string;
   config:any;
   keys:{[key:number]:Key};
-  justPressed:string[];
-  justReleased:string[];
+  justPressed:{note:string,press:number}[];
+  justReleased:{note:string,press:number}[];
   currAnimation:gsap.core.Tween|undefined;
   runningAnimations:{[key:string]:gsap.core.Tween};
+  leftMargin:string;
+  leftNegative:string;
+
   constructor(){
     this.webSocketService = new WebSocketService();
     this.config = "";
@@ -43,6 +47,8 @@ export class AppComponent implements AfterViewChecked {
     this.justReleased=[];
     this.currAnimation = undefined;
     this.runningAnimations={}
+    this.leftMargin="0px";
+    this.leftNegative="0px";
 
     ConfigService.getConfig().subscribe((confValue) =>{
       if(!this.config){
@@ -64,42 +70,75 @@ export class AppComponent implements AfterViewChecked {
         if(this.keys[noteId]){
           if(data.velocity > 0){
             this.keys[noteId].pressed = true;
+            this.keys[noteId].timesPressed++;
             const keyPress:KeyPress = {
               startTime:now,
               endTime:-1,
-              diff:1
+              diff:1,
+              pressId:this.keys[noteId].timesPressed
             }
-            this.justPressed.unshift(noteId.toString());
+            this.justPressed.unshift({'note':noteId.toString(),'press':keyPress.pressId});
             this.keys[noteId].keyPresses.unshift(keyPress);
           }else{
             this.keys[noteId].pressed = false;
-            this.keys[noteId].keyPresses[0].endTime = now;
-            this.keys[noteId].keyPresses[0].diff = -(now - this.keys[noteId].keyPresses[0].startTime)/(seconds*1000) ;
-            if(this.keys[noteId].keyPresses[0].diff < -1){
-              this.keys[noteId].keyPresses[0].diff = -1;
+            const press = this.keys[noteId].keyPresses[0]
+            press.endTime = now;
+            press.diff = -(now - this.keys[noteId].keyPresses[0].startTime)/(seconds*1000) ;
+            if(press.diff < -1){
+              press.diff = -1;
             }
-            this.justReleased.unshift(noteId.toString());
+            this.justReleased.unshift({'note':noteId.toString(),'press':press.pressId});
           }
         }
         console.log(JSON.stringify(this.keys[noteId].keyPresses));
       });
     });
+    
+  }
+
+  ngOnInit(): void {
+    
   }
 
   ngAfterViewChecked(){
+    this.leftMargin = $('.keyboardContainer').css("margin-left");
+    this.leftMargin = this.leftMargin.substring(0,this.leftMargin.length-2);
+
+    this.leftNegative = $('.leftKey').css('margin-left');
+    this.leftNegative = this.leftNegative?.substring(0,this.leftNegative.length-2);
+    console.log('leftneg' + this.leftNegative)
+
+    console.log(this.leftMargin);
     for(let key of this.justPressed){
-      const noteId=parseInt(key);
+      const noteId=parseInt(key['note']);
+      const selector="#a"+noteId+'-'+key['press'];
       console.log(noteId.toString());
-      // this.runningAnimations["#a"+noteId+'-'+(this.keys[noteId].keyPresses.length-1)] = rectGrow("#a"+noteId+'-'+(this.keys[noteId].keyPresses.length-1));
-      this.runningAnimations["#a"+noteId+'-'+0] = rectGrow("#a"+noteId+'-'+'0');
+      this.runningAnimations[selector] = rectGrow(selector);
       this.justPressed = this.justPressed.slice(1,this.justPressed.length-1);
     }
     for(let key of this.justReleased){
-      const noteId=parseInt(key);
-      this.runningAnimations["#a"+noteId+'-'+(0)].kill();
+      const noteId=parseInt(key['note']);
+      const scale = this.keys[noteId].keyPresses[0].diff
+      const selector = "#a"+noteId+'-'+key['press'];
+      
       console.log(this.keys[noteId].keyPresses[0].diff);
-      // this.currAnimation = rectSlide("#a"+noteId+'-'+(this.keys[noteId].keyPresses.length-1),this.keys[noteId].keyPresses[this.keys[noteId].keyPresses.length-1].diff);
-      this.currAnimation = rectSlide("#a"+noteId+'-'+0,this.keys[noteId].keyPresses[0].diff);
+      if(scale == -1){
+        this.runningAnimations[selector].kill();
+        this.currAnimation=rectShrink(selector,scale);
+      }else{
+        this.runningAnimations[selector].kill();
+        this.runningAnimations[selector] = rectSlide(selector,scale);
+        setTimeout(() =>{
+          this.currAnimation=rectShrink(selector,scale);
+          this.runningAnimations[selector].kill();
+        }, (scale + 1) * 1000 * seconds);
+        setTimeout(()=>{
+          // this.keys[noteId].keyPresses.pop()
+          this.runningAnimations[selector].kill();
+        }, 1000 * seconds)
+      }
+      
+      
       this.justReleased = this.justReleased.slice(1,this.justReleased.length-1);
     }
   }
@@ -151,6 +190,12 @@ export class AppComponent implements AfterViewChecked {
     return result;
   }
 
+  computestyle = (ind:number) => {
+    const colors = ["rgb(256,256,256)","rgb(125,0,0)","rgb(0,125,0)"];
+    console.log('size'+(ind*20 + parseFloat(this.leftMargin))+'px');
+    return {'background-color':colors[ind%3], 'left':(ind*20 + parseFloat(this.leftMargin))+'px'};
+  }
+
   generateKeyboard = () => {
     // const noteRange = Object.values(NoteNames); 
 
@@ -167,7 +212,8 @@ export class AppComponent implements AfterViewChecked {
         noteName:note,
         pressed:false,
         velocity:0,
-        keyPresses:[]
+        keyPresses:[],
+        timesPressed:0
       }
       this.keys[i+10]=key;
     }
