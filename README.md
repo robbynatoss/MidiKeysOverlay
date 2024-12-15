@@ -18,3 +18,11 @@ For now this was most convenient option.
 * Set the Width to 1920 x 1080
 * Select a framerate of 60 FPS
 ![BrowserSource.png](BrowserSource.png)
+
+## Configuration Options
+
+There are a few configs in Config.yaml which is part of midikeysoverlay.zip which allow you to change:
+* Websocket URL
+* Websocket Endpoint
+* Lowest Piano note displayed
+* Highest Piano note displayed
