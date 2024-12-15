@@ -1,11 +1,10 @@
-import { AfterContentChecked, AfterViewChecked, Component, OnInit } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import {AfterViewChecked, Component} from '@angular/core';
 import { ConfigService } from './service/ConfigService';
 import { WebSocketService } from './service/WebSocketService';
-import { combineLatest, generate, merge, Observable, timeout } from 'rxjs';
+import { Observable} from 'rxjs';
 import { parse } from 'yaml';
 import { Key, KeyPress } from './common/key';
-import { NoteNames, NoteData, CommandCode } from './common/notes';
+import { NoteNames, NoteData} from './common/notes';
 import gsap from 'gsap';
 
 const seconds = 2;

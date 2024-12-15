@@ -3,9 +3,8 @@ import { AppComponent } from './app.component';
 import {ConfigService} from './service/ConfigService';
 import { HttpClient, provideHttpClient } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
-import { provideRouter, RouterModule, withHashLocation } from '@angular/router';
+import { provideRouter, withHashLocation } from '@angular/router';
 import { routes } from './app.routes';
-import { WebSocketService } from './service/WebSocketService';
 
 const appConfigFactory = (httpClient:HttpClient) => {
     console.log('here')
