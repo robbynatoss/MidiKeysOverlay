@@ -14,7 +14,7 @@ For now this was most convenient option.
 2. Edit your OBS startup shortcut or script to allow CORS for local files. Add "--allow-file-access-from-files" flag after the Target of the shortcut
 ![OBSShortcut.png](OBSShortcut.png)
 3. Create a browser source with the Overlay.
-* Select a local file
+* Check the "local file" option and Browse for "index.html" from inside midikeysoverlay.zip
 * Set the Width to 1920 x 1080
 * Select a framerate of 60 FPS
 ![BrowserSource.png](BrowserSource.png)
