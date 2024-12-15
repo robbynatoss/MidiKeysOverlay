@@ -12,7 +12,7 @@
                 
                 <div class="track">
                     <div *ngFor="let press of kv.value.keyPresses; index as j" 
-                    id="{{'a' + (NoteNames.indexOf(kv.value.noteName) + 10) + '-'+ j}}"
+                    id="{{'a' + (NoteNames.indexOf(kv.value.noteName) + 10) + '-'+ press.pressId}}"
                     class="rect"
                     [ngClass]="{'pressed':press.endTime == -1,'released':press.endTime !== -1}"></div>
                 </div>

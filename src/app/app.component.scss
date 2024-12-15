@@ -33,9 +33,9 @@
 }
 
 .track{
-    margin: calc(-180vh) 0 0 0;
+    margin: 0 0 0 0;
     width: 100%;
-    height: 180vh;
+    height: 80vh;
 }
 
 .leftKey {
@@ -45,12 +45,12 @@
     .rect{
         width: calc(100% - 0.96rem);
     }
-    margin:auto -0.96rem 0 -0.1rem;
+    margin:80vh -0.96rem 0 -0.1rem;
     aspect-ratio: 60/348;
     background-image: url("~/public/left_white_key.png");
 }
 .extraKey {
-    margin:auto 0 0 0;
+    margin:80vh 0 0 0;
     aspect-ratio: 60/348;
     background-image: url("~/public/extra_key.png");
 }
@@ -63,7 +63,7 @@
         width: calc(100% - 1rem);
         margin-right: 0.5rem;
     }
-    margin:auto -0.5rem 0 -0.5rem;
+    margin:80vh -0.5rem 0 -0.5rem;
     aspect-ratio: 60/348;
     background-image: url("~/public/middle_white_key.png");
 }
@@ -76,7 +76,7 @@
         width: calc( 0.94rem);
         margin-right: 0.94rem;
     }
-    margin:auto 0 0 -0.94rem;
+    margin:80vh 0 0 -0.94rem;
     aspect-ratio: 62/348;
     background-image: url("~/public/right_white_key.png");
 }
@@ -90,7 +90,7 @@
         width: calc(100% - 1.14rem);
         margin-right: 0.45rem;
     }
-    margin:auto -0.69rem 0 -0.45rem;
+    margin:80vh -0.69rem 0 -0.45rem;
     aspect-ratio: 59/348;
     background-image: url("~/public/middle_white_key_2.png");
 }
@@ -105,7 +105,7 @@
         margin-right: 0.45rem;
     }
 
-    margin:auto -0.45rem 0 -0.72rem;
+    margin:80vh -0.45rem 0 -0.72rem;
     aspect-ratio: 62/348;
     background-image: url("~/public/middle_white_key_2.png");
     -moz-transform: scaleX(-1);
@@ -119,11 +119,8 @@
 .rect{
     display: block;
     position: absolute;
-    height: 180vh;
+    height: 80vh;
     bottom: 11.5rem;
-    transform-origin: 0% 100%;
-    transform: translateZ(0);
-    -webkit-transform: translateZ(0);
     background-image: linear-gradient(to right ,rgb(234, 1, 255),rgb(95, 0, 104)) !important;
 }
 
@@ -132,7 +129,7 @@
         width:calc(100%);
         bottom:7.55rem;
     }
-    margin:auto 0 3.95rem 0rem;
+    margin:80vh 0 3.95rem 0rem;
     z-index: 999 !important;
     height: 7.55rem;
     aspect-ratio: 41/226;

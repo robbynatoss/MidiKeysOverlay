@@ -4,6 +4,7 @@ export type Key  = {
     noteName:string;
     isWhiteKey:boolean;
     keyPresses:KeyPress[];
+    timesPressed:number;
 }
 
 export type KeyPress = {
@@ -11,4 +12,5 @@ export type KeyPress = {
     startTime:number;
     endTime:number;
     diff:number;
+    pressId:number;
 }
