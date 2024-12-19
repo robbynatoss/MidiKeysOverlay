@@ -42,7 +42,6 @@ export class AppComponent implements AfterViewChecked {
   currAnimation: gsap.core.Tween | undefined;
   runningAnimations: { [key: string]: gsap.core.Tween };
   colours: string[] = [];
-  patternLength = 0;
 
   constructor() {
     this.webSocketService = new WebSocketService();
@@ -57,7 +56,6 @@ export class AppComponent implements AfterViewChecked {
     ConfigService.getConfig().subscribe((confValue) => {
       if (!this.config) {
         this.config = parse(confValue);
-        this.patternLength = this.config.colors.length;
         const range = this.generateKeyboard();
         this.assignColours(this.config.colors.pattern,this.config.colors.keyboard, range);
       }
@@ -209,8 +207,8 @@ export class AppComponent implements AfterViewChecked {
   };
 
   generateKeyboard = ():number => {
-    const leftInd = NoteNames.indexOf(this.config.range.leftKey);
-    const rightInd = NoteNames.indexOf(this.config.range.rightKey);
+    const leftInd = NoteNames.indexOf(this.config.range?.leftKey ?? 'A0');
+    const rightInd = NoteNames.indexOf(this.config.range?.rightKey ?? 'C8');
 
     for (let i = leftInd; i <= rightInd; i++) {
       const note = NoteNames[i];

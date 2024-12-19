@@ -38,9 +38,11 @@ export class WebSocketService {
         this.webSocket$ = new Promise((resolve,reject) => {
             configState.subscribe((body:string) => {
                 const state = parse(body);
-                this.URL = state.websocket.URL;
-                this.endpoint = state.websocket.endpoint;
-
+                this.URL = state.websocket?.URL;
+                if(this.URL === undefined) alert('websocket.URL is missing from config.yaml, please configure the URL to connect to')
+                this.endpoint = state.websocket?.endpoint;
+                if(this.endpoint === undefined) console.log('WARNING: websocket.endpoint is missing from config.yaml')
+                
                 this.webSocketSubject = webSocket<string>({
                     url:this.URL+this.endpoint, 
                     openObserver: {
