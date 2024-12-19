@@ -22,7 +22,7 @@ For now this was most convenient option.
 ## Configuration Options
 
 There are a few configs in Config.yaml which is part of midikeysoverlay.zip which allow you to change:
-* Websocket URL
-* Websocket Endpoint
-* Lowest Piano note displayed
-* Highest Piano note displayed
+* Websocket URL (required)
+* Websocket Endpoint (not required)
+* Lowest Piano note displayed (Defaults to A0 if missing)
+* Highest Piano note displayed (Defaults to C8 if missing)
