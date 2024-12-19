@@ -4,3 +4,10 @@ websocket:
 range:
   leftKey: C1
   rightKey: C8
+colors:
+  pattern: 
+    - "#df2935"
+    - "#c8ad55"
+    - "#49392c"
+    - "#eafdf8"
+    - "#018e42"

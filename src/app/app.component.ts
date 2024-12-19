@@ -11,19 +11,16 @@ const seconds = 2;
 
 const height = 80;
 
-// let rectGrow = (target:string) => gsap.fromTo(target,{translateY:0,scaleY:0, force3D:true, ease:'linear'},{translateY:`-${height}vh`,scaleY:'-1',force3D:true,duration:seconds,ease:'linear'});
 let rectGrow = (target: string) => gsap.fromTo(target, 
   { top: `0vh`, height: 0, ease: 'linear' }, 
   { top: `${-height}vh`, height: `${height}vh`, duration: seconds, ease: 'linear' });
 
 
-// let rectSlide = (target:string, scale:number) => gsap.fromTo(target,{translateY:`${scale*height}vh`,scaleY:scale, ease:'linear'},{translateY:`-${height}vh`,scaleY:scale,duration:seconds+scale*seconds,ease:'linear'});
 let rectSlide = (target: string, scale: number) => gsap.fromTo(target, 
   { top: `${scale * height}vh`, height: `${-scale * height}vh`, ease: 'linear' }, 
   { top: `-${height}vh`, height: `${-scale * height}vh`, duration: seconds + scale * seconds, ease: 'linear' });
 
 
-// let rectShrink = (target:string) => gsap.fromTo(target,{translateY:0,scaleY:0, ease:'linear'},{translateY:`-${height}vh`,scaleY:'-1',duration:seconds,ease:'linear'});
 let rectShrink = (target: string, scale: number) => gsap.fromTo(target, 
   { top: `${-height}vh`, height: `${-scale * height}vh`, ease: 'linear' }, 
   { top: `${-height}vh`, height: `0`, duration: -scale * seconds, ease: 'linear' });
@@ -44,6 +41,9 @@ export class AppComponent implements AfterViewChecked {
   justReleased: { note: string, press: number }[];
   currAnimation: gsap.core.Tween | undefined;
   runningAnimations: { [key: string]: gsap.core.Tween };
+  colours: string[] = [];
+  patternLength = 0;
+
   constructor() {
     this.webSocketService = new WebSocketService();
     this.config = "";
@@ -57,7 +57,9 @@ export class AppComponent implements AfterViewChecked {
     ConfigService.getConfig().subscribe((confValue) => {
       if (!this.config) {
         this.config = parse(confValue);
-        this.generateKeyboard();
+        this.patternLength = this.config.colors.length;
+        const range = this.generateKeyboard();
+        this.assignColours(this.config.colors.pattern,this.config.colors.keyboard, range);
       }
     })
 
@@ -121,7 +123,7 @@ export class AppComponent implements AfterViewChecked {
           this.runningAnimations[selector].kill();
         }, (scale + 1) * 1000 * seconds);
         setTimeout(() => {
-          this.keys[noteId].keyPresses.pop()
+          // this.keys[noteId].keyPresses.pop()
           this.runningAnimations[selector].kill();
         }, 1000 * seconds)
       }
@@ -176,7 +178,37 @@ export class AppComponent implements AfterViewChecked {
     return result;
   }
 
-  generateKeyboard = () => {
+  hexToRGBA(hex:string,alpha:number, darken:number){
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+
+    if(!result) return "";
+
+    const darker = {
+      r:parseInt(result[1], 16) - darken,
+      g:parseInt(result[2], 16) - darken,
+      b:parseInt(result[3], 16) - darken
+    }
+
+    return `rgba(${darker.r}, ${darker.g}, ${darker.b}, ${alpha})`;
+  }
+
+  assignColours = (pattern:string[],keyboard:string[], range:number) => {
+    let style = document.createElement('style');
+    document.getElementsByTagName('head')[0].appendChild(style);
+    let styleText = '';
+    if(pattern){
+      for(let i = 0; i<=range;i++){
+        let styleRule = `.color${i} { background-color: ${this.hexToRGBA(pattern[i%pattern.length],0.7,0)} !important;  }`;
+        let gradientRule = `.grad${i} { background-image: linear-gradient(to right ,${this.hexToRGBA(pattern[i%pattern.length],1,0)},${this.hexToRGBA(pattern[i%pattern.length],1,30)})   !important;  }`;
+        styleText = styleText.concat(styleRule, gradientRule);
+      }
+    }else if(keyboard){
+      //TODO for later
+    }
+    style.innerHTML =styleText;
+  };
+
+  generateKeyboard = ():number => {
     const leftInd = NoteNames.indexOf(this.config.range.leftKey);
     const rightInd = NoteNames.indexOf(this.config.range.rightKey);
 
@@ -192,8 +224,9 @@ export class AppComponent implements AfterViewChecked {
       }
       this.keys[i + 10] = key;
     }
+
+    return rightInd-leftInd;
   }
-
-
+  
   public readonly NoteNames = NoteNames;
 }

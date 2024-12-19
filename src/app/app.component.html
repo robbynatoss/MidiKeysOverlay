@@ -13,12 +13,12 @@
                 <div class="track">
                     <div *ngFor="let press of kv.value.keyPresses; index as j" 
                     id="{{'a' + (NoteNames.indexOf(kv.value.noteName) + 10) + '-'+ press.pressId}}"
-                    class="rect"
+                    class="rect grad{{i}}"
                     [ngClass]="{'pressed':press.endTime == -1,'released':press.endTime !== -1}"></div>
                 </div>
                 <div
-                [ngClass]="{'pressed':kv.value.pressed}"
-                class="key-highlight"></div>
+                [ngClass]="{'released' :!kv.value.pressed}"
+                class="key-highlight color{{i}}"></div>
     </div>
 
 </div>
